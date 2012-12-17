@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+.board {
+  border-collapse: collapse;
+}
+
+.board td {
+  width: 64px;
+  height: 64px;
+  background: black;
+  border: 1px solid white;
+  padding: 0;
+}
+
+.board img {
+  width: 100%;
+  height: 100%;
+}
+</style>
+<title>Tileboard</title>
+<h1>Tileboard</h1>
+<script>
+var WIDTH = 8;
+var HEIGHT = 8;
+
+window.addEventListener("DOMContentLoaded", function() {
+  var table = document.createElement("table");
+
+  table.classList.add("board");
+  document.body.appendChild(table);
+
+  for (var y = 0; y < HEIGHT; y++) {
+    var row = document.createElement("tr");
+
+    table.appendChild(row);
+    
+    for (var x = 0; x < WIDTH; x++) {
+      var td = document.createElement("td");
+      var img = document.createElement("img");
+      var id = "tile" + x + 'x' + y;
+
+      img.setAttribute("src", "empty.gif");
+      td.appendChild(img);
+      td.setAttribute("class", "normal");
+      td.setAttribute("title", "this is " + id + ".");
+      row.appendChild(td);
+      window[id] = td;
+    }
+  }
+  
+  var observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      console.log("MUTATION", mutation.type);
+      
+      window.m = mutation;
+    });
+  });
+
+  observer.observe(table, {
+    attributes: true,
+    subtree: true,
+    childList: true
+  });
+}, false);
+</script>
