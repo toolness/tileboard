@@ -17,12 +17,76 @@
   width: 100%;
   height: 100%;
 }
+
+.js-moving {
+  position: relative;
+  transition-property: left, top;
+  transition-duration: 1s, 1s;
+}
 </style>
 <title>Tileboard</title>
 <h1>Tileboard</h1>
 <script>
 var WIDTH = 8;
 var HEIGHT = 8;
+
+function smoothifyMovement(table) {
+  function endMovement() {
+    if (this.classList.contains("js-moving")) {
+      this.classList.remove("js-moving");
+      this.style.left = null;
+      this.style.top = null;
+      ["style", "class"].forEach(function(attr) {
+        if (this.hasAttribute(attr) && this.getAttribute(attr) === "")
+          this.removeAttribute(attr);
+      }, this);
+    }
+  }
+  
+  var observer = new MutationObserver(function(mutations) {
+    var removed = [];
+    var removedParents = [];
+
+    mutations.forEach(function(m) {
+      if (m.target.nodeName !== "TD")
+        return;
+      if (m.removedNodes && m.removedNodes.length)
+        [].slice.call(m.removedNodes).forEach(function(node) {
+          endMovement.call(node);
+          removed.push(node);
+          removedParents.push(m.target);
+        });
+      if (m.addedNodes && m.addedNodes.length) {
+        [].slice.call(m.addedNodes).forEach(function(node) {
+          var index = removed.indexOf(node);
+          if (index != -1) {
+            var prevRect = removedParents[index].getBoundingClientRect();
+            var currRect = m.target.getBoundingClientRect();
+            node.style.left = (prevRect.left - currRect.left) + "px";
+            node.style.top = (prevRect.top - currRect.top) + "px";
+            node.classList.add("js-moving");
+
+            // This is the bizarre magic-sauce that makes the
+            // browser "remember" what the current style is, so our
+            // future changes will trigger transitions.
+            window.getComputedStyle(node).getPropertyValue("left");
+
+            node.style.left = "0px";
+            node.style.top = "0px";
+            node.addEventListener("transitionend", endMovement);
+          }
+        });
+      }
+    });
+  });
+
+  observer.observe(table, {
+    subtree: true,
+    childList: true
+  });
+  
+  return observer;
+}
 
 window.addEventListener("DOMContentLoaded", function() {
   var table = document.createElement("table");
@@ -49,18 +113,11 @@ window.addEventListener("DOMContentLoaded", function() {
     }
   }
   
-  var observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-      console.log("MUTATION", mutation.type);
-      
-      window.m = mutation;
-    });
-  });
-
-  observer.observe(table, {
-    attributes: true,
-    subtree: true,
-    childList: true
-  });
+  var smoothifyObserver = smoothifyMovement(table);
+  
+  tile0x0.firstChild.src = "https://developer.cdn.mozilla.net/media/img/mdn-logo-sm.png";
+  setTimeout(function() {
+    tile1x1.replaceChild(tile0x0.firstChild, tile1x1.firstChild);
+  }, 1000);
 }, false);
 </script>
