@@ -80,9 +80,11 @@ function smoothifyMovement(table) {
             
             // This delay allows transitions to work properly on Firefox.
             setTimeout(function() {
-              node.style.left = "0px";
-              node.style.top = "0px";
-              node.addEventListener("transitionend", endMovement);
+              if (node.classList.contains("js-moving")) {
+                node.style.left = "0px";
+                node.style.top = "0px";
+                node.addEventListener("transitionend", endMovement);
+              }
             }, 50);
           }
         });
