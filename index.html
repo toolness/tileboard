@@ -41,58 +41,15 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function activatePieces(table) {
-  var observer = new MutationObserver(function(mutations) {
-    var removed = [];
-    
-    mutations.forEach(function(m) {
-      if (m.type == "attributes") {
-        if (m.target.nodeName !== "IMG")
-          return;
-        var node = m.target;
-        var newBehavior = node.getAttribute("data-behavior");
-        var oldBehavior = m.oldValue;
-        if (oldBehavior != newBehavior) {
-          if (node.behavior) {
-            node.behavior.tearDown();
-            delete node.behavior;
-          }
-          if (newBehavior && newBehavior in PieceBehaviors) {
-            node.behavior = new PieceBehaviors[newBehavior](node);
-          }
-        }
-      } else {
-        if (m.target.nodeName != "TD")
-          return;
-        if (m.removedNodes && m.removedNodes.length)
-          removed = removed.concat([].slice.call(m.removedNodes));
-        if (m.addedNodes && m.addedNodes.length) {
-          [].slice.call(m.addedNodes).forEach(function(node) {
-            var index = removed.indexOf(node);
-            if (index != -1)
-              removed.splice(index, 1);
-          });
-        }
-      }
-    });
-    
-    removed.forEach(function(node) {
-      if (node.behavior) {
-        node.behavior.tearDown();
-        delete node.behavior;
-      }
-    });
-  });
-  
-  observer.observe(table, {
-    subtree: true,
-    childList: true,
-    attributes: true,
-    attributeOldValue: true,
-    attributeFilter: ['data-behavior']
-  });
-  
-  return observer;
+function randomMove(node) {
+  var cell = node.parentNode;
+  var table = cell.parentNode.parentNode;
+  var randomRow = getRandomChoice(table.childNodes);
+  var randomCell = getRandomChoice(randomRow.childNodes);
+  if (randomCell === cell)
+    return randomMove(node);
+  var old = randomCell.replaceChild(node, randomCell.firstChild);
+  cell.appendChild(old);
 }
 
 function smoothifyMovement(table) {
@@ -150,29 +107,6 @@ function smoothifyMovement(table) {
   return observer;
 }
 
-var PieceBehaviors = {
-  RandomMover: function(img) {
-    this._img = img;
-    this._interval = setInterval(this.randomMove.bind(this), 2000);
-  }
-};
-
-PieceBehaviors.RandomMover.prototype = {
-  randomMove: function() {
-    var cell = this._img.parentNode;
-    var table = cell.parentNode.parentNode;
-    var randomRow = getRandomChoice(table.childNodes);
-    var randomCell = getRandomChoice(randomRow.childNodes);
-    if (randomCell === cell)
-      return this.randomMove();
-    var old = randomCell.replaceChild(this._img, randomCell.firstChild);
-    cell.appendChild(old);
-  },
-  tearDown: function() {
-    clearInterval(this._interval);
-  }
-};
-
 window.addEventListener("DOMContentLoaded", function() {
   var table = document.createElement("table");
 
@@ -199,10 +133,13 @@ window.addEventListener("DOMContentLoaded", function() {
   }
   
   var smoothifyObserver = smoothifyMovement(table);
-  var pieceBehaviorObserver = activatePieces(table);
   
-  tile0x0.firstChild.setAttribute("data-behavior", "RandomMover");
+  tile0x0.firstChild.classList.add("random-mover");
   tile0x0.firstChild.src = "https://developer.cdn.mozilla.net/media/img/mdn-logo-sm.png";
-  window.mdntile = tile0x0.firstChild;
+
+  setInterval(function() {
+    [].slice.call(document.querySelectorAll(".random-mover"))
+      .forEach(randomMove);
+  }, 2000);
 }, false);
 </script>
