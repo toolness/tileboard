@@ -21,7 +21,7 @@
   };
   
   setInterval(function() {
-    [].slice.call(document.querySelectorAll(".random-mover"))
+    [].slice.call(document.querySelectorAll(".board .random-mover"))
       .forEach(randomMove);
   }, 2000);
 })();
