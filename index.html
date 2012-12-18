@@ -17,6 +17,18 @@ body.paused #pause:before {
   content: "Unpause";
 }
 
+body:not(.editing-css) #edit-css:before {
+  content: "Edit CSS";
+}
+
+body.editing-css #edit-css:before {
+  content: "Hide CSS";
+}
+
+body:not(.editing-css) #css {
+  display: none;
+}
+
 .board {
   font-size: 0;
 }
@@ -51,11 +63,32 @@ body.paused #pause:before {
   -webkit-transition-property: left, top;
   -webkit-transition-duration: 1s, 1s;
 }
+
+#panes {
+  position: relative;
+}
+
+#board-holder {
+  display: inline-block;
+}
+
+textarea#css {
+  display: inline-block;
+  vertical-align: top;
+  font-family: Menlo, Monaco, "Courier New", monospace;
+  font-size: 12px;
+  width: 350px;
+  height: 350px;
+}
 </style>
 <title>Tileboard</title>
 <h1>Tileboard</h1>
-<div id="board-holder"></div>
+<div id="panes">
+  <div id="board-holder"></div>
+  <textarea id="css"></textarea>
+</div>
 <button id="pause"></button>
+<button id="edit-css"></button>
 <script src="tileboard.js"></script>
 <script src="tileboard.random-mover.js"></script>
 <script src="tileboard.smoothify-movement.js"></script>
@@ -75,6 +108,13 @@ window.addEventListener("DOMContentLoaded", function() {
   };
   var table = document.querySelector(".board") || makeDefaultBoard();
   var smoothifyObserver = Tileboard.smoothifyMovement(table);
+  var css = document.getElementById("css");
+  var style = document.querySelector("style");
+  
+  css.value = style.textContent;
+  css.onchange = css.onkeyup = function() {
+    style.textContent = this.value;
+  };
   
   Tileboard.on('change:isPaused', function() {
     if (Tileboard.isPaused)
@@ -82,15 +122,20 @@ window.addEventListener("DOMContentLoaded", function() {
     else
       document.body.classList.remove("paused");
   });
+
+  document.getElementById("edit-css").onclick = function() {
+    document.body.classList.toggle("editing-css");
+  };
   
   document.getElementById("pause").onclick = function() {
     Tileboard.setPaused(!Tileboard.isPaused);
   };
   
   window.webxrayWhenGogglesLoad = function(ui) {
+    var oldPauseState = Tileboard.isPaused;
     Tileboard.setPaused(true);
     ui.on('quit', function() {
-      Tileboard.setPaused(false);
+      Tileboard.setPaused(oldPauseState);
     });
   };
 }, false);
