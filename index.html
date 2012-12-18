@@ -131,16 +131,11 @@ function smoothifyMovement(table) {
             node.style.top = (prevRect.top - currRect.top) + "px";
             node.classList.add("js-moving");
 
-            // This is the bizarre magic-sauce that makes the
-            // browser "remember" what the current style is, so our
-            // future changes will trigger transitions.
-            var style = window.getComputedStyle(node);
-            style.getPropertyValue("left");
-            style.getPropertyValue("top");
-
-            node.style.left = "0px";
-            node.style.top = "0px";
-            node.addEventListener("transitionend", endMovement);
+            setTimeout(function() {
+              node.style.left = "0px";
+              node.style.top = "0px";
+              node.addEventListener("transitionend", endMovement);
+            }, 50);
           }
         });
       }
@@ -170,19 +165,13 @@ PieceBehaviors.RandomMover.prototype = {
     var randomCell = getRandomChoice(randomRow.childNodes);
     if (randomCell === cell)
       return this.randomMove();
-    randomCell.replaceChild(this._img, randomCell.firstChild);
-    cell.appendChild(makeNewBlankPiece());
+    var old = randomCell.replaceChild(this._img, randomCell.firstChild);
+    cell.appendChild(old);
   },
   tearDown: function() {
     clearInterval(this._interval);
   }
 };
-
-function makeNewBlankPiece() {
-  var img = document.createElement("img");
-  img.setAttribute("src", "empty.gif");
-  return img;
-}
 
 window.addEventListener("DOMContentLoaded", function() {
   var table = document.createElement("table");
@@ -196,10 +185,12 @@ window.addEventListener("DOMContentLoaded", function() {
     table.appendChild(row);
     
     for (var x = 0; x < WIDTH; x++) {
+      var img = document.createElement("img");
       var td = document.createElement("td");
       var id = "tile" + x + 'x' + y;
 
-      td.appendChild(makeNewBlankPiece());
+      img.setAttribute("src", "empty.gif");
+      td.appendChild(img);
       td.setAttribute("class", "normal");
       td.setAttribute("title", "this is " + id + ".");
       row.appendChild(td);
