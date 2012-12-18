@@ -29,6 +29,24 @@ body:not(.editing-css) #css {
   display: none;
 }
 
+#panes {
+  position: relative;
+}
+
+#board-holder {
+  display: inline-block;
+}
+
+textarea#css {
+  display: inline-block;
+  vertical-align: top;
+  font-family: Menlo, Monaco, "Courier New", monospace;
+  font-size: 12px;
+  width: 350px;
+  height: 350px;
+}
+</style>
+<style id="board-styles">
 .board {
   font-size: 0;
 }
@@ -63,23 +81,6 @@ body:not(.editing-css) #css {
   -webkit-transition-property: left, top;
   -webkit-transition-duration: 1s, 1s;
 }
-
-#panes {
-  position: relative;
-}
-
-#board-holder {
-  display: inline-block;
-}
-
-textarea#css {
-  display: inline-block;
-  vertical-align: top;
-  font-family: Menlo, Monaco, "Courier New", monospace;
-  font-size: 12px;
-  width: 350px;
-  height: 350px;
-}
 </style>
 <title>Tileboard</title>
 <h1>Tileboard</h1>
@@ -109,7 +110,7 @@ window.addEventListener("DOMContentLoaded", function() {
   var table = document.querySelector(".board") || makeDefaultBoard();
   var smoothifyObserver = Tileboard.smoothifyMovement(table);
   var css = document.getElementById("css");
-  var style = document.querySelector("style");
+  var style = document.querySelector("style#board-styles");
   
   css.value = style.textContent;
   css.onchange = css.onkeyup = function() {
