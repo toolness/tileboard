@@ -134,7 +134,9 @@ function smoothifyMovement(table) {
             // This is the bizarre magic-sauce that makes the
             // browser "remember" what the current style is, so our
             // future changes will trigger transitions.
-            window.getComputedStyle(node).getPropertyValue("left");
+            var style = window.getComputedStyle(node);
+            style.getPropertyValue("left");
+            style.getPropertyValue("top");
 
             node.style.left = "0px";
             node.style.top = "0px";
