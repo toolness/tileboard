@@ -102,8 +102,10 @@ function smoothifyMovement(table) {
 }
 
 window.addEventListener("DOMContentLoaded", function() {
+  var LETTERS = "abcdefghijklmnopqrstuvwxyz";
   var table = document.createElement("table");
-
+  var tiles = window.tiles = {};
+  
   table.classList.add("board");
   document.body.appendChild(table);
 
@@ -114,11 +116,12 @@ window.addEventListener("DOMContentLoaded", function() {
     
     for (var x = 0; x < WIDTH; x++) {
       var td = document.createElement("td");
-      var id = "tile" + x + 'x' + y;
+      var id = LETTERS[x] + (HEIGHT - y);
 
-      td.setAttribute("title", "this is " + id + ".");
+      td.setAttribute("id", id);
+      td.setAttribute("title", id);
       row.appendChild(td);
-      window[id] = td;
+      tiles[id] = td;
     }
   }
   
@@ -127,7 +130,7 @@ window.addEventListener("DOMContentLoaded", function() {
   var piece = document.createElement("img");
   piece.classList.add("random-mover");
   piece.src = "https://developer.cdn.mozilla.net/media/img/mdn-logo-sm.png";
-  tile0x0.appendChild(piece);
+  tiles.a1.appendChild(piece);
 
   setInterval(function() {
     [].slice.call(document.querySelectorAll(".random-mover"))
