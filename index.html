@@ -35,86 +35,17 @@
 <title>Tileboard</title>
 <h1>Tileboard</h1>
 <script src="random-mover.js"></script>
+<script src="smoothify-movement.js"></script>
 <script>
 "use strict";
 
-var BOARD_WIDTH = 8;
-var BOARD_HEIGHT = 8;
-
-var MutationObserver = (window.MutationObserver ||
-                        window.WebKitMutationObserver ||
-                        window.MozMutationObserver);
-
-function smoothifyMovement(table) {
-  function endMovement() {
-    if (this.classList.contains("js-moving")) {
-      this.classList.remove("js-moving");
-      this.style.left = null;
-      this.style.top = null;
-      ["style", "class"].forEach(function(attr) {
-        if (this.hasAttribute(attr) && this.getAttribute(attr) === "")
-          this.removeAttribute(attr);
-      }, this);
-    }
-  }
-
-  var observer = new MutationObserver(function(mutations) {
-    var removed = [];
-    var removedParents = [];
-
-    mutations.forEach(function(m) {
-      if (m.target.nodeName !== "TD")
-        return;
-      if (m.removedNodes && m.removedNodes.length)
-        [].slice.call(m.removedNodes).forEach(function(node) {
-          endMovement.call(node);
-          removed.push(node);
-          removedParents.push(m.target);
-        });
-      if (m.addedNodes && m.addedNodes.length) {
-        [].slice.call(m.addedNodes).forEach(function(node) {
-          var index = removed.indexOf(node);
-          if (index != -1) {
-            var prevRect = removedParents[index].getBoundingClientRect();
-            var currRect = m.target.getBoundingClientRect();
-            node.style.left = (prevRect.left - currRect.left) + "px";
-            node.style.top = (prevRect.top - currRect.top) + "px";
-
-            // Fix for Chrome to allow transitions to work properly.
-            window.getComputedStyle(node).getPropertyValue("left");
-            window.getComputedStyle(node).getPropertyValue("top");
-
-            node.classList.add("js-moving");
-            
-            // This delay allows transitions to work properly on Firefox.
-            setTimeout(function() {
-              if (node.classList.contains("js-moving")) {
-                node.style.left = null;
-                node.style.top = null;
-                node.addEventListener("transitionend", endMovement);
-              }
-            }, 50);
-          }
-        });
-      }
-    });
-  });
-
-  observer.observe(table, {
-    subtree: true,
-    childList: true
-  });
-  
-  return observer;
-}
-
-window.addEventListener("DOMContentLoaded", function() {
-  var LETTERS = "abcdefghijklmnopqrstuvwxyz";
+function makeEmptyBoard() {
+  var BOARD_WIDTH = 8;
+  var BOARD_HEIGHT = 8;
+  var LETTERS = "abcdefgh";
   var table = document.createElement("table");
-  var tiles = window.tiles = {};
   
   table.classList.add("board");
-  document.body.appendChild(table);
 
   for (var y = 0; y < BOARD_HEIGHT; y++) {
     var row = document.createElement("tr");
@@ -128,16 +59,21 @@ window.addEventListener("DOMContentLoaded", function() {
       td.setAttribute("id", id);
       td.setAttribute("title", id);
       row.appendChild(td);
-      tiles[id] = td;
     }
   }
-  
+
+  return table;
+}
+
+window.addEventListener("DOMContentLoaded", function() {
+  var table = makeEmptyBoard();
   var smoothifyObserver = smoothifyMovement(table);
   
   var piece = document.createElement("img");
   piece.classList.add("random-mover");
   piece.src = "https://developer.cdn.mozilla.net/media/img/mdn-logo-sm.png";
-  tiles.a1.appendChild(piece);
+  table.querySelector("#a1").appendChild(piece);
+  document.body.appendChild(table);
 }, false);
 </script>
 <script src="zepto.js"></script>
