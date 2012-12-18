@@ -1,4 +1,4 @@
-var smoothifyMovement = (function() {
+(function(Tileboard) {
   var MutationObserver = (window.MutationObserver ||
                           window.WebKitMutationObserver ||
                           window.MozMutationObserver);
@@ -15,7 +15,7 @@ var smoothifyMovement = (function() {
     }
   }
   
-  return function smoothifyMovement(table) {
+  Tileboard.smoothifyMovement = function(table) {
     var observer = new MutationObserver(function(mutations) {
       var removed = [];
       var removedParents = [];
@@ -65,4 +65,4 @@ var smoothifyMovement = (function() {
   
     return observer;
   };
-})();
+})(Tileboard);

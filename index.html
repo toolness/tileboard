@@ -38,42 +38,15 @@ html {
 </style>
 <title>Tileboard</title>
 <h1>Tileboard</h1>
-<script src="random-mover.js"></script>
-<script src="smoothify-movement.js"></script>
+<script src="tileboard.js"></script>
+<script src="tileboard.random-mover.js"></script>
+<script src="tileboard.smoothify-movement.js"></script>
 <script>
 "use strict";
 
-function makeEmptyBoard() {
-  var BOARD_WIDTH = 8;
-  var BOARD_HEIGHT = 8;
-  var LETTERS = "abcdefgh";
-  var table = document.createElement("table");
-  
-  table.classList.add("board");
-
-  for (var y = 0; y < BOARD_HEIGHT; y++) {
-    var row = document.createElement("tr");
-
-    table.appendChild(row);
-    
-    for (var x = 0; x < BOARD_WIDTH; x++) {
-      var td = document.createElement("td");
-      var id = LETTERS[x] + (BOARD_HEIGHT - y);
-
-      td.setAttribute("id", id);
-      td.setAttribute("title", id);
-      td.classList.add("col-" + LETTERS[x]);
-      td.classList.add("row-" + (BOARD_HEIGHT - y));
-      row.appendChild(td);
-    }
-  }
-
-  return table;
-}
-
 window.addEventListener("DOMContentLoaded", function() {
-  var table = makeEmptyBoard();
-  var smoothifyObserver = smoothifyMovement(table);
+  var table = Tileboard.makeEmptyBoard();
+  var smoothifyObserver = Tileboard.smoothifyMovement(table);
   
   var piece = document.createElement("img");
   piece.classList.add("random-mover");

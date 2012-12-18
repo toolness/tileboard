@@ -1,4 +1,4 @@
-(function() {
+(function(Tileboard) {
   function getRandomChoice(arrayLike) {
     var index = getRandomInt(0, arrayLike.length-1);
     return arrayLike[index];
@@ -24,4 +24,4 @@
     [].slice.call(document.querySelectorAll(".board .random-mover"))
       .forEach(randomMove);
   }, 2000);
-})();
+})(Tileboard);
