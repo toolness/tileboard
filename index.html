@@ -26,7 +26,34 @@
 <script src="tileboard.js"></script>
 <script src="tileboard.random-mover.js"></script>
 <script src="tileboard.smoothify-movement.js"></script>
-<script src="main.js"></script>
-<!-- This one isn't needed, but can be useful when debugging from
-     the console. -->
 <script src="vendor/zepto.js"></script>
+<script>
+$(window).ready(function() {
+  var table = $(".board")[0] || (function makeDefaultBoard() {
+    var table = $(Tileboard.makeEmptyBoard()).appendTo("#board-holder");
+    var piece = $('<img class="random-mover" src="https://' + 
+        'developer.cdn.mozilla.net/media/img/mdn-logo-sm.png">')
+      .appendTo("#a1");
+    return table[0];
+  })();
+  var smoothifyObserver = Tileboard.smoothifyMovement(table);
+  var style = $("style");
+
+  $("#edit-css").click(function() {  $("body").toggleClass("editing-css"); });
+  $("#css").text(style.text()).bind("change keyup", function() {
+    style.text(this.value);
+  });
+
+  // Pause logic.
+
+  Tileboard.on('change:isPaused', function() {
+    $(document.body).toggleClass("paused", Tileboard.isPaused);
+  });
+  $("#pause").click(function() { Tileboard.setPaused(!Tileboard.isPaused); });
+  window.webxrayWhenGogglesLoad = function(ui) {
+    var oldPauseState = Tileboard.isPaused;
+    Tileboard.setPaused(true);
+    ui.on('quit', function() { Tileboard.setPaused(oldPauseState); });
+  };
+});
+</script>
