@@ -34,7 +34,7 @@
 </style>
 <title>Tileboard</title>
 <h1>Tileboard</h1>
-<script src="random-move.js"></script>
+<script src="random-mover.js"></script>
 <script>
 "use strict";
 
@@ -138,11 +138,6 @@ window.addEventListener("DOMContentLoaded", function() {
   piece.classList.add("random-mover");
   piece.src = "https://developer.cdn.mozilla.net/media/img/mdn-logo-sm.png";
   tiles.a1.appendChild(piece);
-
-  setInterval(function() {
-    [].slice.call(document.querySelectorAll(".random-mover"))
-      .forEach(randomMove);
-  }, 2000);
 }, false);
 </script>
 <script src="zepto.js"></script>

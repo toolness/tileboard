@@ -1,4 +1,4 @@
-var randomMove = (function() {
+(function() {
   function getRandomChoice(arrayLike) {
     var index = getRandomInt(0, arrayLike.length-1);
     return arrayLike[index];
@@ -10,7 +10,7 @@ var randomMove = (function() {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  return function randomMove(node) {
+  function randomMove(node) {
     var cell = node.parentNode;
     var table = cell.parentNode.parentNode;
     var randomRow = getRandomChoice(table.childNodes);
@@ -19,4 +19,9 @@ var randomMove = (function() {
       return randomMove(node);
     randomCell.appendChild(node);
   };
+  
+  setInterval(function() {
+    [].slice.call(document.querySelectorAll(".random-mover"))
+      .forEach(randomMove);
+  }, 2000);
 })();
