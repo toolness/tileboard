@@ -22,6 +22,8 @@
   position: relative;
   transition-property: left, top;
   transition-duration: 1s, 1s;
+  -webkit-transition-property: left, top;
+  -webkit-transition-duration: 1s, 1s;
 }
 </style>
 <title>Tileboard</title>
@@ -30,6 +32,10 @@
 <script>
 var WIDTH = 8;
 var HEIGHT = 8;
+
+var MutationObserver = (window.MutationObserver ||
+                        window.WebKitMutationObserver ||
+                        window.MozMutationObserver);
 
 function smoothifyMovement(table) {
   function endMovement() {
@@ -43,7 +49,7 @@ function smoothifyMovement(table) {
       }, this);
     }
   }
-  
+
   var observer = new MutationObserver(function(mutations) {
     var removed = [];
     var removedParents = [];
@@ -65,8 +71,14 @@ function smoothifyMovement(table) {
             var currRect = m.target.getBoundingClientRect();
             node.style.left = (prevRect.left - currRect.left) + "px";
             node.style.top = (prevRect.top - currRect.top) + "px";
-            node.classList.add("js-moving");
 
+            // Fix for Chrome to allow transitions to work properly.
+            window.getComputedStyle(node).getPropertyValue("left");
+            window.getComputedStyle(node).getPropertyValue("top");
+
+            node.classList.add("js-moving");
+            
+            // This delay allows transitions to work properly on Firefox.
             setTimeout(function() {
               node.style.left = "0px";
               node.style.top = "0px";
