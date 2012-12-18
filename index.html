@@ -30,6 +30,71 @@
 var WIDTH = 8;
 var HEIGHT = 8;
 
+function getRandomChoice(arrayLike) {
+  var index = getRandomInt(0, arrayLike.length-1);
+  return arrayLike[index];
+}
+
+// Returns a random integer between min and max
+// Using Math.round() will give you a non-uniform distribution!
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function activatePieces(table) {
+  var observer = new MutationObserver(function(mutations) {
+    var removed = [];
+    
+    mutations.forEach(function(m) {
+      if (m.type == "attributes") {
+        if (m.target.nodeName !== "IMG")
+          return;
+        var node = m.target;
+        var newBehavior = node.getAttribute("data-behavior");
+        var oldBehavior = m.oldValue;
+        if (oldBehavior != newBehavior) {
+          if (node.behavior) {
+            node.behavior.tearDown();
+            delete node.behavior;
+          }
+          if (newBehavior && newBehavior in PieceBehaviors) {
+            node.behavior = new PieceBehaviors[newBehavior](node);
+          }
+        }
+      } else {
+        if (m.target.nodeName != "TD")
+          return;
+        if (m.removedNodes && m.removedNodes.length)
+          removed = removed.concat([].slice.call(m.removedNodes));
+        if (m.addedNodes && m.addedNodes.length) {
+          [].slice.call(m.addedNodes).forEach(function(node) {
+            var index = removed.indexOf(node);
+            if (index != -1)
+              removed.splice(index, 1);
+          });
+        }
+      }
+    });
+    
+    removed.forEach(function(node) {
+      if (node.behavior) {
+        node.behavior.tearDown();
+        delete node.behavior;
+      }
+    });
+  });
+  
+  observer.observe(table, {
+    subtree: true,
+    childList: true,
+    attributes: true,
+    attributeOldValue: true,
+    attributeFilter: ['data-behavior']
+  });
+  
+  return observer;
+}
+
 function smoothifyMovement(table) {
   function endMovement() {
     if (this.classList.contains("js-moving")) {
@@ -88,6 +153,35 @@ function smoothifyMovement(table) {
   return observer;
 }
 
+var PieceBehaviors = {
+  RandomMover: function(img) {
+    this._img = img;
+    this._interval = setInterval(this.randomMove.bind(this), 2000);
+  }
+};
+
+PieceBehaviors.RandomMover.prototype = {
+  randomMove: function() {
+    var cell = this._img.parentNode;
+    var table = cell.parentNode.parentNode;
+    var randomRow = getRandomChoice(table.childNodes);
+    var randomCell = getRandomChoice(randomRow.childNodes);
+    if (randomCell === cell)
+      return this.randomMove();
+    randomCell.replaceChild(this._img, randomCell.firstChild);
+    cell.appendChild(makeNewBlankPiece());
+  },
+  tearDown: function() {
+    clearInterval(this._interval);
+  }
+};
+
+function makeNewBlankPiece() {
+  var img = document.createElement("img");
+  img.setAttribute("src", "empty.gif");
+  return img;
+}
+
 window.addEventListener("DOMContentLoaded", function() {
   var table = document.createElement("table");
 
@@ -101,11 +195,9 @@ window.addEventListener("DOMContentLoaded", function() {
     
     for (var x = 0; x < WIDTH; x++) {
       var td = document.createElement("td");
-      var img = document.createElement("img");
       var id = "tile" + x + 'x' + y;
 
-      img.setAttribute("src", "empty.gif");
-      td.appendChild(img);
+      td.appendChild(makeNewBlankPiece());
       td.setAttribute("class", "normal");
       td.setAttribute("title", "this is " + id + ".");
       row.appendChild(td);
@@ -114,10 +206,10 @@ window.addEventListener("DOMContentLoaded", function() {
   }
   
   var smoothifyObserver = smoothifyMovement(table);
+  var pieceBehaviorObserver = activatePieces(table);
   
+  tile0x0.firstChild.setAttribute("data-behavior", "RandomMover");
   tile0x0.firstChild.src = "https://developer.cdn.mozilla.net/media/img/mdn-logo-sm.png";
-  setTimeout(function() {
-    tile1x1.replaceChild(tile0x0.firstChild, tile1x1.firstChild);
-  }, 1000);
+  window.mdntile = tile0x0.firstChild;
 }, false);
 </script>
