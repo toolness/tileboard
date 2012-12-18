@@ -62,6 +62,8 @@ function makeEmptyBoard() {
 
       td.setAttribute("id", id);
       td.setAttribute("title", id);
+      td.classList.add("row-" + (BOARD_HEIGHT - y));
+      td.classList.add("col-" + LETTERS[x]);
       row.appendChild(td);
     }
   }
