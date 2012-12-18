@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
-.board {
-  border-collapse: collapse;
+.board tr {
+  display: block;
 }
 
 .board td {
+  display: inline-block;
+  position: relative;
   width: 64px;
   height: 64px;
   background: black;
-  border: 1px solid white;
+  border-right: 1px solid white;
+  border-bottom: 1px solid white;
   padding: 0;
 }
 
 .board img {
+  position: absolute;
+  top: 0px;
+  left: 0px;
   width: 100%;
   height: 100%;
-  vertical-align: top;
+  z-index: 1;
 }
 
 .js-moving {
-  position: relative;
   transition-property: left, top;
   transition-duration: 1s, 1s;
   -webkit-transition-property: left, top;
@@ -84,8 +89,8 @@ function smoothifyMovement(table) {
             // This delay allows transitions to work properly on Firefox.
             setTimeout(function() {
               if (node.classList.contains("js-moving")) {
-                node.style.left = "0px";
-                node.style.top = "0px";
+                node.style.left = null;
+                node.style.top = null;
                 node.addEventListener("transitionend", endMovement);
               }
             }, 50);
