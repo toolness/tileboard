@@ -1,0 +1,44 @@
+html {
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+}
+
+body.paused {
+  background: salmon;
+}
+
+body:not(.paused) #pause:before {
+  content: "Pause";
+}
+
+body.paused #pause:before {
+  content: "Unpause";
+}
+
+body:not(.editing-css) #edit-css:before {
+  content: "Edit CSS";
+}
+
+body.editing-css #edit-css:before {
+  content: "Hide CSS";
+}
+
+body:not(.editing-css) #css {
+  display: none;
+}
+
+#panes {
+  position: relative;
+}
+
+#board-holder {
+  display: inline-block;
+}
+
+textarea#css {
+  display: inline-block;
+  vertical-align: top;
+  font-family: Menlo, Monaco, "Courier New", monospace;
+  font-size: 12px;
+  width: 350px;
+  height: 350px;
+}

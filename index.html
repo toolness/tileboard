@@ -1,52 +1,7 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<link rel="stylesheet" href="main.css">
 <style>
-html {
-  font-family: "Helvetica Neue", Helvetica, sans-serif;
-}
-
-body.paused {
-  background: salmon;
-}
-
-body:not(.paused) #pause:before {
-  content: "Pause";
-}
-
-body.paused #pause:before {
-  content: "Unpause";
-}
-
-body:not(.editing-css) #edit-css:before {
-  content: "Edit CSS";
-}
-
-body.editing-css #edit-css:before {
-  content: "Hide CSS";
-}
-
-body:not(.editing-css) #css {
-  display: none;
-}
-
-#panes {
-  position: relative;
-}
-
-#board-holder {
-  display: inline-block;
-}
-
-textarea#css {
-  display: inline-block;
-  vertical-align: top;
-  font-family: Menlo, Monaco, "Courier New", monospace;
-  font-size: 12px;
-  width: 350px;
-  height: 350px;
-}
-</style>
-<style id="board-styles">
 .board {
   font-size: 0;
 }
@@ -93,52 +48,7 @@ textarea#css {
 <script src="tileboard.js"></script>
 <script src="tileboard.random-mover.js"></script>
 <script src="tileboard.smoothify-movement.js"></script>
-<script>
-"use strict";
-
-window.addEventListener("DOMContentLoaded", function() {
-  var makeDefaultBoard = function() {
-    var table = Tileboard.makeEmptyBoard();
-    var piece = document.createElement("img");
-    piece.classList.add("random-mover");
-    piece.src = "https://developer.cdn.mozilla.net/media/img/mdn-logo-sm.png";
-    table.querySelector("#a1").appendChild(piece);
-    document.getElementById("board-holder").appendChild(table);
-    
-    return table;
-  };
-  var table = document.querySelector(".board") || makeDefaultBoard();
-  var smoothifyObserver = Tileboard.smoothifyMovement(table);
-  var css = document.getElementById("css");
-  var style = document.querySelector("style#board-styles");
-  
-  css.value = style.textContent;
-  css.onchange = css.onkeyup = function() {
-    style.textContent = this.value;
-  };
-  
-  Tileboard.on('change:isPaused', function() {
-    if (Tileboard.isPaused)
-      document.body.classList.add("paused");
-    else
-      document.body.classList.remove("paused");
-  });
-
-  document.getElementById("edit-css").onclick = function() {
-    document.body.classList.toggle("editing-css");
-  };
-  
-  document.getElementById("pause").onclick = function() {
-    Tileboard.setPaused(!Tileboard.isPaused);
-  };
-  
-  window.webxrayWhenGogglesLoad = function(ui) {
-    var oldPauseState = Tileboard.isPaused;
-    Tileboard.setPaused(true);
-    ui.on('quit', function() {
-      Tileboard.setPaused(oldPauseState);
-    });
-  };
-}, false);
-</script>
+<script src="main.js"></script>
+<!-- This one isn't needed, but can be useful when debugging from
+     the console. -->
 <script src="vendor/zepto.js"></script>
