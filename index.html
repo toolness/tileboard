@@ -33,8 +33,8 @@
 <script>
 "use strict";
 
-var WIDTH = 8;
-var HEIGHT = 8;
+var BOARD_WIDTH = 8;
+var BOARD_HEIGHT = 8;
 
 var MutationObserver = (window.MutationObserver ||
                         window.WebKitMutationObserver ||
@@ -111,14 +111,14 @@ window.addEventListener("DOMContentLoaded", function() {
   table.classList.add("board");
   document.body.appendChild(table);
 
-  for (var y = 0; y < HEIGHT; y++) {
+  for (var y = 0; y < BOARD_HEIGHT; y++) {
     var row = document.createElement("tr");
 
     table.appendChild(row);
     
-    for (var x = 0; x < WIDTH; x++) {
+    for (var x = 0; x < BOARD_WIDTH; x++) {
       var td = document.createElement("td");
-      var id = LETTERS[x] + (HEIGHT - y);
+      var id = LETTERS[x] + (BOARD_HEIGHT - y);
 
       td.setAttribute("id", id);
       td.setAttribute("title", id);
