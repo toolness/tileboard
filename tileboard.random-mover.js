@@ -15,6 +15,9 @@
     var table = cell.parentNode.parentNode;
     var randomRow = getRandomChoice(table.childNodes);
     var randomCell = getRandomChoice(randomRow.childNodes);
+    
+    if (Tileboard.isPaused)
+      return;
     if (randomCell === cell || randomCell.childNodes.length)
       return randomMove(node);
     randomCell.appendChild(node);

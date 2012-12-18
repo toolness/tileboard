@@ -5,6 +5,18 @@ html {
   font-family: "Helvetica Neue", Helvetica, sans-serif;
 }
 
+body.paused {
+  background: salmon;
+}
+
+body:not(.paused) #pause:before {
+  content: "Pause";
+}
+
+body.paused #pause:before {
+  content: "Unpause";
+}
+
 .board tr {
   display: block;
 }
@@ -38,6 +50,8 @@ html {
 </style>
 <title>Tileboard</title>
 <h1>Tileboard</h1>
+<div id="board-holder"></div>
+<button id="pause"></button>
 <script src="tileboard.js"></script>
 <script src="tileboard.random-mover.js"></script>
 <script src="tileboard.smoothify-movement.js"></script>
@@ -52,7 +66,25 @@ window.addEventListener("DOMContentLoaded", function() {
   piece.classList.add("random-mover");
   piece.src = "https://developer.cdn.mozilla.net/media/img/mdn-logo-sm.png";
   table.querySelector("#a1").appendChild(piece);
-  document.body.appendChild(table);
+  document.getElementById("board-holder").appendChild(table);
+  
+  Tileboard.on('change:isPaused', function() {
+    if (Tileboard.isPaused)
+      document.body.classList.add("paused");
+    else
+      document.body.classList.remove("paused");
+  });
+  
+  document.getElementById("pause").onclick = function() {
+    Tileboard.setPaused(!Tileboard.isPaused);
+  };
+  
+  window.webxrayWhenGogglesLoad = function(ui) {
+    Tileboard.setPaused(true);
+    ui.on('quit', function() {
+      Tileboard.setPaused(false);
+    });
+  };
 }, false);
 </script>
 <script src="vendor/zepto.js"></script>
