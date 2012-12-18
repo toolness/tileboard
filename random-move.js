@@ -15,9 +15,8 @@ var randomMove = (function() {
     var table = cell.parentNode.parentNode;
     var randomRow = getRandomChoice(table.childNodes);
     var randomCell = getRandomChoice(randomRow.childNodes);
-    if (randomCell === cell)
+    if (randomCell === cell || randomCell.childNodes.length)
       return randomMove(node);
-    var old = randomCell.replaceChild(node, randomCell.firstChild);
-    cell.appendChild(old);
+    randomCell.appendChild(node);
   };
 })();
