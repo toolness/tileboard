@@ -17,6 +17,10 @@ body.paused #pause:before {
   content: "Unpause";
 }
 
+.board {
+  font-size: 0;
+}
+
 .board tr {
   display: block;
 }
@@ -59,14 +63,18 @@ body.paused #pause:before {
 "use strict";
 
 window.addEventListener("DOMContentLoaded", function() {
-  var table = Tileboard.makeEmptyBoard();
+  var makeDefaultBoard = function() {
+    var table = Tileboard.makeEmptyBoard();
+    var piece = document.createElement("img");
+    piece.classList.add("random-mover");
+    piece.src = "https://developer.cdn.mozilla.net/media/img/mdn-logo-sm.png";
+    table.querySelector("#a1").appendChild(piece);
+    document.getElementById("board-holder").appendChild(table);
+    
+    return table;
+  };
+  var table = document.querySelector(".board") || makeDefaultBoard();
   var smoothifyObserver = Tileboard.smoothifyMovement(table);
-  
-  var piece = document.createElement("img");
-  piece.classList.add("random-mover");
-  piece.src = "https://developer.cdn.mozilla.net/media/img/mdn-logo-sm.png";
-  table.querySelector("#a1").appendChild(piece);
-  document.getElementById("board-holder").appendChild(table);
   
   Tileboard.on('change:isPaused', function() {
     if (Tileboard.isPaused)

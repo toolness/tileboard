@@ -13,12 +13,12 @@
   function randomMove(node) {
     var cell = node.parentNode;
     var table = cell.parentNode.parentNode;
-    var randomRow = getRandomChoice(table.childNodes);
-    var randomCell = getRandomChoice(randomRow.childNodes);
+    var randomRow = getRandomChoice(table.children);
+    var randomCell = getRandomChoice(randomRow.children);
     
     if (Tileboard.isPaused)
       return;
-    if (randomCell === cell || randomCell.childNodes.length)
+    if (randomCell === cell || randomCell.children.length)
       return randomMove(node);
     randomCell.appendChild(node);
   };

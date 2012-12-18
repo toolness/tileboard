@@ -12,12 +12,14 @@ var Tileboard = (function() {
       var BOARD_HEIGHT = 8;
       var LETTERS = "abcdefgh";
       var table = document.createElement("table");
-
+      var txt = function(str) { return document.createTextNode(str); };
+      
       table.classList.add("board");
 
       for (var y = 0; y < BOARD_HEIGHT; y++) {
         var row = document.createElement("tr");
 
+        table.appendChild(txt("\n  "));
         table.appendChild(row);
 
         for (var x = 0; x < BOARD_WIDTH; x++) {
@@ -28,10 +30,14 @@ var Tileboard = (function() {
           td.setAttribute("title", id);
           td.classList.add("col-" + LETTERS[x]);
           td.classList.add("row-" + (BOARD_HEIGHT - y));
+          row.appendChild(txt("\n    "));
           row.appendChild(td);
         }
+        row.appendChild(txt("\n  "));
       }
 
+      table.appendChild(txt("\n"));
+      
       return table;
     }
   };
