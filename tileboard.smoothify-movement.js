@@ -50,6 +50,7 @@
                   node.style.left = null;
                   node.style.top = null;
                   node.addEventListener("transitionend", endMovement);
+                  node.addEventListener("webkitTransitionEnd", endMovement);
                 }
               }, 50);
             }
