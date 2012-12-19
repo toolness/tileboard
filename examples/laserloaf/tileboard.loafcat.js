@@ -1,5 +1,12 @@
 (function(Tileboard) {
 
+  function parseEvent(evt) {
+    if (!(evt.metaKey || evt.altKey || evt.ctrlKey)) {
+      var key = String.fromCharCode(evt.keyCode);
+      return parseCommand(String.fromCharCode(evt.keyCode));
+    }
+  }
+
   function parseCommand(key) {
     var cmd = undefined;
     if(key.match(/[qweasdzxc]/i)) {
@@ -42,8 +49,7 @@
 
   document.onkeydown = function(evt){
     if(!document.querySelector('.editing-css')){
-      var key = String.fromCharCode(evt.keyCode);
-      var delta = parseCommand(String.fromCharCode(evt.keyCode));
+      var delta = parseEvent(evt);
       if(delta) {
         move(document.querySelector('.board .loafcat'), delta);
         return false;
