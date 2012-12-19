@@ -10,21 +10,25 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  function randomMove(node) {
+  function randomMove(tileboard, node) {
     var cell = node.parentNode;
     var table = cell.parentNode.parentNode;
     var randomRow = getRandomChoice(table.children);
     var randomCell = getRandomChoice(randomRow.children);
     
-    if (Tileboard.isPaused)
+    if (tileboard.isPaused)
       return;
     if (randomCell === cell || randomCell.children.length)
-      return randomMove(node);
+      return randomMove(tileboard, node);
     randomCell.appendChild(node);
   };
   
   setInterval(function() {
-    [].slice.call(document.querySelectorAll(".board .random-mover"))
-      .forEach(randomMove);
+    $("table.board").each(function(i, table) {
+      if (table.tileboard)
+        $(".random-mover", table).each(function() {
+          randomMove(table.tileboard, this);
+        });
+    });
   }, 2000);
 })(Tileboard);

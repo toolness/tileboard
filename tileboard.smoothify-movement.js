@@ -15,7 +15,7 @@
     }
   }
   
-  Tileboard.smoothifyMovement = function(table) {
+  Tileboard.prototype.smoothifyMovement = function() {
     var observer = new MutationObserver(function(mutations) {
       var removed = [];
       var removedParents = [];
@@ -58,7 +58,7 @@
       });
     });
 
-    observer.observe(table, {
+    observer.observe(this.table, {
       subtree: true,
       childList: true
     });
