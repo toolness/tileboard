@@ -6,7 +6,7 @@ and/or JavaScript.
 
 The game board is represented in HTML by a `<table>` element. Each
 `<td>` is a tile on the board, and their child elements are pieces on
-the board. Moving a piece from one tile to another is as simple as removing
+the board. Moving a piece from one tile to another is as simple as moaving
 it from one `<td>` to another; an optional **smoothify-movement** plugin
 can be used to make this discrete action take on the appearance of
 "moving" from one tile to another, but this effect is purely cosmetic
