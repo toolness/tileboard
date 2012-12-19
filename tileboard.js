@@ -20,10 +20,22 @@ var Tileboard = (function() {
       var BOARD_WIDTH = 8;
       var BOARD_HEIGHT = 8;
       var LETTERS = "abcdefgh";
+      var TAB_SIZE = 2;
+      var baseIndent = 0;
       var table = $(this.table);
       var rows = $('tr', table).remove();
-      var txt = function(str) { return document.createTextNode(str); };
+      var indent = function(num) {
+        var parts = ['\n'];
+        for (var i = 0; i < baseIndent + num * TAB_SIZE; i++)
+          parts.push(' ');
+        return document.createTextNode(parts.join(''));
+      };
 
+      if (table[0].previousSibling &&
+          table[0].previousSibling.nodeType === Node.TEXT_NODE) {
+        baseIndent = table[0].previousSibling.nodeValue.split('\n')
+          .slice(-1)[0].length;
+      }
       table.empty();
       
       for (var y = 0; y < BOARD_HEIGHT; y++) {
@@ -35,7 +47,7 @@ var Tileboard = (function() {
         if (!row.length)
           row = $('<tr></tr>').addClass('row-' + rowNum);
 
-        table.append(txt("\n  ")).append(row);
+        table.append(indent(1)).append(row);
 
         for (var x = 0; x < BOARD_WIDTH; x++) {
           var id = LETTERS[x] + rowNum;
@@ -45,12 +57,11 @@ var Tileboard = (function() {
             td = $('<td></td>');
 
           td.addClass("col-" + LETTERS[x]).addClass(id);
-          row.append(txt("\n    ")).append(td);
+          row.append(indent(2)).append(td);
         }
-        row.append(txt("\n  "));
+        row.append(indent(1));
       }
-      table.append(txt("\n"));
-      //$(document.body).append($('<pre></pre>').text(table.html()));
+      table.append(indent(0));
     }
   };
   

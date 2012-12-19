@@ -55,5 +55,8 @@ $(window).ready(function() {
     tileboard.setPaused(true);
     ui.on('quit', function() { tileboard.setPaused(oldPauseState); });
   };
+
+  // For debugging.
+  //$("body").append($('<pre></pre>').text($('body').html()));
 });
 </script>
