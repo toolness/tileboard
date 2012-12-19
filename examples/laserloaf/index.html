@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../../main.css">
+<link rel="stylesheet" href="keys.css">
+<link href='http://fonts.googleapis.com/css?family=Geostar' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+<style>
+/*** Page styles ***/
+
+body {
+  font-family: 'Droid Sans';
+}
+
+h1 {
+  font-family: 'Geostar';
+}
+
+.controls {
+  font-family: 'Calibri';
+  margin-bottom: 1em;
+}
+.controls table {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 0.5em;
+}
+
+/*** Game styles ***/
+
+.board td {
+  background-image: url(http://upload.wikimedia.org/wikipedia/commons/9/98/Carpet_pattern.jpg);
+  background-size: 800%;
+  border-right: 0px solid white;
+  border-bottom: 0px solid white;
+}
+
+.js-moving {
+  transition-property: left, top;
+  transition-duration: 1s, 1s;
+  -webkit-transition-property: left, top;
+  -webkit-transition-duration: 1s, 1s;
+}
+
+.loafcat.js-moving {
+  /* something more pouncy! */
+  transition-timing-function: ease-in; 
+  transition-duration: 0.3s, 0.3s;
+  -webkit-transition-timing-function: ease-in;
+  -webkit-transition-duration: 0.3s, 0.3s;
+}
+
+.board .random-mover {
+  z-index: 2;
+}
+
+.board .loafcat {
+  z-index: 1;
+}
+
+</style>
+<title>Tileboard</title>
+<h1>Laserloaf</h1>
+<p>Loafcat wants the red dot!</p>
+<div class="controls">
+  <h2>Controls:</h2>
+  <table class="light-keys">
+    <tbody>
+      <tr>
+        <td><kbd>q</kbd></td> 
+        <td><kbd>w</kbd></td> 
+        <td><kbd>e</kbd></td>
+      </tr>
+      <tr>
+        <td><kbd>a</kbd></td>
+        <td></td>
+        <td><kbd>d</kbd></td>
+      </tr>
+      <tr>
+        <td><kbd>z</kbd></td>
+        <td><kbd>x</kbd></td>
+        <td><kbd>c</kbd></td> 
+      </tr>
+    </tbody>
+  </table>
+  =
+  <table class="light-keys">
+    <tbody>
+      <tr>
+        <td>↖</td> 
+        <td>↑</td> 
+        <td>↗</td>
+      </tr>
+      <tr>
+        <td>←</td>
+        <td></td>
+        <td>→</td>
+      </tr>
+      <tr>
+        <td>↙</td>
+        <td>↓</td>
+        <td>↘</td> 
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div id="panes">
+  <div id="board-holder">
+    <table id="board" class="board">
+      <tr class="row-1">
+        <td class="col-a a1">
+          <img class="random-mover" src="./dot2.png">
+          <img class="loafcat" src="http://www.hawaiikawaii.net/wp-content/uploads/2011/05/animals_catbread.gif">
+        </td>
+      </tr>
+    </table>
+  </div>
+  <textarea id="css"></textarea>
+</div>
+<button id="pause"></button>
+<button id="edit-css"></button>
+<script src="../../vendor/zepto.js"></script>
+<script src="../../tileboard.js"></script>
+<script src="../../tileboard.random-mover.js"></script>
+<script src="../../tileboard.smoothify-movement.js"></script>
+<script>
+$(window).ready(function() {
+  var tileboard = new Tileboard("#board");
+  var style = $("style");
+
+  tileboard.smoothifyMovement();
+  $("#edit-css").click(function() {  $("body").toggleClass("editing-css"); });
+  $("#css").text(style.text()).bind("change keyup", function() {
+    style.text(this.value);
+  });
+
+  // Pause logic.
+
+  tileboard.on('change:isPaused', function() {
+    $(document.body).toggleClass("paused", Tileboard.isPaused);
+  });
+  $("#pause").click(function() { Tileboard.setPaused(!Tileboard.isPaused); });
+  window.webxrayWhenGogglesLoad = function(ui) {
+    var oldPauseState = Tileboard.isPaused;
+    Tileboard.setPaused(true);
+    ui.on('quit', function() { Tileboard.setPaused(oldPauseState); });
+  };
+});
+</script>
+<script src="tileboard.loafcat.js"></script>
