@@ -1,7 +1,8 @@
 var Tileboard = (function() {
   var Tileboard = function Tileboard(table) {
-    this.table = table;
-    table.tileboard = this;
+    this.table = $(table)[0];
+    this.table.tileboard = this;
+    this._fillBoard();
   };
   
   Tileboard.prototype = {
@@ -14,41 +15,43 @@ var Tileboard = (function() {
     },
     on: function(event, handler) {
       $(this.table).on('tileboard:' + event, handler);
-    }
-  };
-  
-  Tileboard.makeEmptyBoard = function makeEmptyBoard() {
-    var BOARD_WIDTH = 8;
-    var BOARD_HEIGHT = 8;
-    var LETTERS = "abcdefgh";
-    var table = document.createElement("table");
-    var txt = function(str) { return document.createTextNode(str); };
-    
-    table.classList.add("board");
+    },
+    _fillBoard: function() {
+      var BOARD_WIDTH = 8;
+      var BOARD_HEIGHT = 8;
+      var LETTERS = "abcdefgh";
+      var table = $(this.table);
+      var rows = $('tr', table).remove();
+      var txt = function(str) { return document.createTextNode(str); };
 
-    for (var y = 0; y < BOARD_HEIGHT; y++) {
-      var row = document.createElement("tr");
+      table.empty();
+      
+      for (var y = 0; y < BOARD_HEIGHT; y++) {
+        var rowNum = BOARD_HEIGHT - y;
+        var row = rows.filter('.row-' + rowNum);
+        var rowCells = $('td', row).remove();
 
-      table.appendChild(txt("\n  "));
-      table.appendChild(row);
+        row.empty();
+        if (!row.length)
+          row = $('<tr></tr>').addClass('row-' + rowNum);
 
-      for (var x = 0; x < BOARD_WIDTH; x++) {
-        var td = document.createElement("td");
-        var id = LETTERS[x] + (BOARD_HEIGHT - y);
+        table.append(txt("\n  ")).append(row);
 
-        td.setAttribute("title", id);
-        td.classList.add("col-" + LETTERS[x]);
-        td.classList.add("row-" + (BOARD_HEIGHT - y));
-        td.classList.add(id);
-        row.appendChild(txt("\n    "));
-        row.appendChild(td);
+        for (var x = 0; x < BOARD_WIDTH; x++) {
+          var id = LETTERS[x] + rowNum;
+          var td = rowCells.filter('.' + id);
+          
+          if (!td.length)
+            td = $('<td></td>');
+
+          td.addClass("col-" + LETTERS[x]).addClass(id);
+          row.append(txt("\n    ")).append(td);
+        }
+        row.append(txt("\n  "));
       }
-      row.appendChild(txt("\n  "));
+      table.append(txt("\n"));
+      //$(document.body).append($('<pre></pre>').text(table.html()));
     }
-
-    table.appendChild(txt("\n"));
-    
-    return table;
   };
   
   return Tileboard;

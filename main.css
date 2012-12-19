@@ -30,7 +30,7 @@ body:not(.editing-css) #css {
   position: relative;
 }
 
-#board-holder {
+#board {
   display: inline-block;
 }
 
