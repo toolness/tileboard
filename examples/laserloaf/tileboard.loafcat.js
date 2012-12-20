@@ -49,10 +49,13 @@
 
   document.onkeydown = function(evt){
     if(!document.querySelector('.editing-css')){
-      var delta = parseEvent(evt);
-      if(delta) {
-        move(document.querySelector('.board .loafcat'), delta);
-        return false;
+      var node = document.querySelector('.board .loafcat');
+      if(!node.classList.contains("js-moving")) {
+        var delta = parseEvent(evt);
+        if(delta) {
+          move(document.querySelector('.board .loafcat'), delta);
+          return false;
+        }
       }
     }
   };

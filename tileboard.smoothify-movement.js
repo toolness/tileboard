@@ -25,7 +25,6 @@
           return;
         if (m.removedNodes && m.removedNodes.length)
           [].slice.call(m.removedNodes).forEach(function(node) {
-            endMovement.call(node);
             removed.push(node);
             removedParents.push(m.target);
           });
@@ -49,7 +48,7 @@
                 if (node.classList.contains("js-moving")) {
                   node.style.left = null;
                   node.style.top = null;
-                  node.addEventListener("transitionend", endMovement);
+                  $(node).one("transitionend webkitTransitionEnd", endMovement);
                 }
               }, 50);
             }
