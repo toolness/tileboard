@@ -135,13 +135,13 @@ $(window).ready(function() {
   // Pause logic.
 
   tileboard.on('change:isPaused', function() {
-    $(document.body).toggleClass("paused", Tileboard.isPaused);
+    $(document.body).toggleClass("paused", tileboard.isPaused);
   });
-  $("#pause").click(function() { Tileboard.setPaused(!Tileboard.isPaused); });
+  $("#pause").click(function() { tileboard.setPaused(!tileboard.isPaused); });
   window.webxrayWhenGogglesLoad = function(ui) {
-    var oldPauseState = Tileboard.isPaused;
-    Tileboard.setPaused(true);
-    ui.on('quit', function() { Tileboard.setPaused(oldPauseState); });
+    var oldPauseState = tileboard.isPaused;
+    tileboard.setPaused(true);
+    ui.on('quit', function() { tileboard.setPaused(oldPauseState); });
   };
 });
 </script>
