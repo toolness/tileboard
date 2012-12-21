@@ -16,6 +16,21 @@ var Tileboard = (function() {
     on: function(event, handler) {
       $(this.table).on('tileboard:' + event, handler);
     },
+    move: function(pieces, dest) {
+      if (typeof(pieces) == "string")
+        pieces = this.pieces(pieces);
+      else
+        pieces = $(pieces);
+      $("." + dest, this.table).append(pieces);
+    },
+    pieces: function(tile) {
+      return $("." + tile + " > *", this.table);
+    },
+    tile: function(piece) {
+      if (!(piece instanceof Element) && piece.get)
+        piece = piece.get(0);
+      return piece.parentNode.tileId;
+    },
     _fillBoard: function() {
       var BOARD_WIDTH = 8;
       var BOARD_HEIGHT = 8;
@@ -57,6 +72,7 @@ var Tileboard = (function() {
             td = $('<td></td>');
 
           td.addClass("col-" + LETTERS[x]).addClass(id);
+          td[0].tileId = id;
           row.append(indent(2)).append(td);
         }
         row.append(indent(1));
