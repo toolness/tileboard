@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tileboard Test Suite</title>
+    <style>
+    #qunit-testrunner-toolbar ul {
+      display: inline;
+      list-style-type: none;
+      padding: 0;
+    }
+
+    #qunit-testrunner-toolbar ul li {
+      display: inline;
+    }
+
+    #qunit-testrunner-toolbar ul li a {
+      text-decoration: none;
+      padding: 2px 4px;
+      background: rgba(0, 0, 0, 0.1);
+      color: inherit;
+    }
+
+    #qunit-testrunner-toolbar ul li a:hover {
+      background: black;
+      color: white;
+    }
+    </style>
+    <link rel="stylesheet" href="qunit.css">
+  </head>
+
+  <body>
+    <h1  id="qunit-header">Tileboard Test Suite</h1>
+    <h2  id="qunit-banner"></h2>      
+    <div id="qunit-testrunner-toolbar">
+      Manual tests:
+      <ul>
+        <li><a href="manual/smoothify-movement.html">smoothify-movement</a></li>
+      </ul>
+    </div>
+    <h2  id="qunit-userAgent"></h2>
+    <ol  id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <table class="board">
+        <tr class="row-1">
+          <td class="col-a a1">
+            <img src="manual/mdn-logo-sm.png">
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <script src="qunit.js"></script>
+    <script src="../vendor/zepto.js"></script>
+    <script src="../tileboard.js"></script>
+    <script>
+    module("tileboard");
+
+    test("board rows/cols are properly filled", function() {
+      var tb = new Tileboard($("#qunit-fixture .board").clone());
+
+      equal($("tr", tb.table).length, 8);
+      equal($("td", tb.table).length, 64);
+      equal($("img", tb.table).length, 1);
+      equal($("tr.row-1 td.col-a.a1 img", tb.table).length, 1);
+    });
+    
+    test("move() works w/ string as arg 0", function() {
+      var tb = new Tileboard($("#qunit-fixture .board").clone());
+      
+      tb.move("a1", "b5");
+      equal(tb.pieces("a1").length, 0);
+      equal(tb.pieces("b5").length, 1);
+    });
+
+    test("move() works w/ piece as arg 0", function() {
+      var tb = new Tileboard($("#qunit-fixture .board").clone());
+      
+      tb.move($("img", tb.table), "c3");
+      equal(tb.pieces("a1").length, 0);
+      equal(tb.pieces("c3").length, 1);
+    });
+    
+    test("tile() works", function() {
+      var tb = new Tileboard($("#qunit-fixture .board").clone());
+      
+      equal(tb.tile($("img", tb.table)[0]), "a1", "w/ DOM element");
+      equal(tb.tile($("img", tb.table)), "a1", "w/ jQuery/Zepto instance");
+    });
+    
+    test("pausing works", function() {
+      var tb = new Tileboard($("#qunit-fixture .board").clone());
+      var changes = [];
+
+      tb.on("change:isPaused", function() {
+        changes.push(tb.isPaused);
+      });
+      
+      equal(tb.isPaused, false);
+      tb.setPaused(true);
+      deepEqual(changes, [true]);
+      equal(tb.isPaused, true);
+    });
+    
+    if (location.search.match(/externalreporter=1/))
+      document.write('<script src="/externalreporter.js"></' + 'script>');
+    </script>
+  </body>
+</html>
