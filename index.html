@@ -1,62 +1,23 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<link rel="stylesheet" href="main.css">
-<style>
-.board td {
-  background: black;
-  border-right: 1px solid white;
-  border-bottom: 1px solid white;
-}
-
-.js-moving {
-  transition-property: left, top;
-  transition-duration: 1s, 1s;
-  -webkit-transition-property: left, top;
-  -webkit-transition-duration: 1s, 1s;
-}
-</style>
-<title>Tileboard</title>
-<h1>Tileboard</h1>
-<div id="panes">
-  <table id="board" class="board">
-    <tr class="row-1">
-      <td class="col-a a1">
-        <img class="random-mover" src="https://developer.cdn.mozilla.net/media/img/mdn-logo-sm.png">
-      </td>
-    </tr>
-  </table>
-  <textarea id="css"></textarea>
+<link rel="stylesheet" href="vendor/docco.css">
+<title></title>
+<div id="container">
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+        <a class="source">tileboard.js</a>
+      </div>
+  </div>
 </div>
-<button id="pause"></button>
-<button id="edit-css"></button>
-<script src="vendor/zepto.js"></script>
-<script src="tileboard.js"></script>
-<script src="tileboard.random-mover.js"></script>
-<script src="tileboard.smoothify-movement.js"></script>
-<script>
-$(window).ready(function() {
-  var tileboard = new Tileboard("#board");
-  var style = $("style");
-
-  tileboard.smoothifyMovement();
-  $("#edit-css").click(function() {  $("body").toggleClass("editing-css"); });
-  $("#css").text(style.text()).bind("change keyup", function() {
-    style.text(this.value);
-  });
-
-  // Pause logic.
-
-  tileboard.on('change:isPaused', function() {
-    $(document.body).toggleClass("paused", tileboard.isPaused);
-  });
-  $("#pause").click(function() { tileboard.setPaused(!tileboard.isPaused); });
-  window.webxrayWhenGogglesLoad = function(ui) {
-    var oldPauseState = tileboard.isPaused;
-    tileboard.setPaused(true);
-    ui.on('quit', function() { tileboard.setPaused(oldPauseState); });
-  };
-
-  // For debugging.
-  //$("body").append($('<pre></pre>').text($('body').html()));
-});
-</script>
+<script src="vendor/showdown.js"></script>
+<script src="vendor/codemirror.js"></script>
+<script src="vendor/codemirror-javascript-mode.js"></script>
+<script src="vendor/codemirror-xml-mode.js"></script>
+<script src="vendor/codemirror-css-mode.js"></script>
+<script src="vendor/codemirror-htmlmixed-mode.js"></script>
+<script src="vendor/brocco.js"></script>
+<script src="vendor/brocco-html-and-css.js"></script>
+<script src="vendor/brocco-jump-to.js"></script>

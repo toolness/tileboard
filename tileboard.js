@@ -1,4 +1,31 @@
+"use strict";
+
+// Tileboard is a hackable game micro-framework for simple discrete,
+// tile-based games that is designed to invite people to learn about game
+// design, HTML, CSS, and/or JavaScript. For more information on the vision
+// and goals, see the [README][].
+//
+// This project is [hosted on Github][github] and has a [test suite][tests].
+// It is available under the MIT license.
+//
+// Tileboard's only dependency is [jQuery][] or [Zepto][].
+//
+// Presently, the only example of Tileboard in use is [Laserloaf][].
+//
+//   [README]: https://github.com/toolness/tileboard#readme
+//   [jQuery]: http://jquery.com/
+//   [Zepto]: http://zeptojs.com/
+//   [github]: https://github.com/toolness/tileboard
+//   [tests]: test/
+//   [Laserloaf]: examples/laserloaf/
+
 var Tileboard = (function() {
+
+  // ## The Tileboard Constructor
+  //
+  // The constructor takes only one argument: a jQuery instance or
+  // DOM element representing the `<table>` element to use for the
+  // board.
   var Tileboard = function Tileboard(table) {
     this.table = $(table)[0];
     this.table.tileboard = this;
