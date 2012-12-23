@@ -17,6 +17,51 @@
     }
   }
   
+  function startMovement(piece, from, to) {
+    var prevRect = from.getBoundingClientRect();
+    var currRect = to.getBoundingClientRect();
+    var xOfs = prevRect.left - currRect.left;
+    var yOfs = prevRect.top - currRect.top;
+
+    if (xOfs) piece.style.left = xOfs + "px";
+    if (yOfs) piece.style.top = yOfs + "px";
+
+    // Fix for Chrome to allow transitions to work properly.
+    window.getComputedStyle(piece).getPropertyValue("left");
+    window.getComputedStyle(piece).getPropertyValue("top");
+
+    piece.classList.add("js-moving");
+  
+    // This delay allows transitions to work properly on Firefox.
+    setTimeout(function() {
+      var propsLeft = [];
+      var onEnd = function(event) {
+        var index = propsLeft.indexOf(event.propertyName);
+        if (index != -1) {
+          propsLeft.splice(index, 1);
+          if (propsLeft.length == 0) {
+            endMovement.call(this);
+            $(piece).unbind(TRANSITION_EVENTS, onEnd);
+          }
+        }
+      };
+      
+      if (piece.classList.contains("js-moving")) {
+        if (xOfs) {
+          piece.style.left = null;
+          propsLeft.push("left");
+        }
+
+        if (yOfs) {
+          piece.style.top = null;
+          propsLeft.push("top");
+        }
+
+        $(piece).bind(TRANSITION_EVENTS, onEnd);
+      }
+    }, 50);
+  }
+  
   Tileboard.prototype.smoothifyMovement = function() {
     var observer = new MutationObserver(function(mutations) {
       var removed = [];
@@ -33,50 +78,8 @@
         if (m.addedNodes && m.addedNodes.length) {
           [].slice.call(m.addedNodes).forEach(function(node) {
             var index = removed.indexOf(node);
-            if (index != -1) {
-              var prevRect = removedParents[index].getBoundingClientRect();
-              var currRect = m.target.getBoundingClientRect();
-              var xOfs = prevRect.left - currRect.left;
-              var yOfs = prevRect.top - currRect.top;
-
-              if (xOfs) node.style.left = xOfs + "px";
-              if (yOfs) node.style.top = yOfs + "px";
-
-              // Fix for Chrome to allow transitions to work properly.
-              window.getComputedStyle(node).getPropertyValue("left");
-              window.getComputedStyle(node).getPropertyValue("top");
-
-              node.classList.add("js-moving");
-            
-              // This delay allows transitions to work properly on Firefox.
-              setTimeout(function() {
-                var propsLeft = [];
-                var onEnd = function(event) {
-                  var index = propsLeft.indexOf(event.propertyName);
-                  if (index != -1) {
-                    propsLeft.splice(index, 1);
-                    if (propsLeft.length == 0) {
-                      endMovement.call(this);
-                      $(node).unbind(TRANSITION_EVENTS, onEnd);
-                    }
-                  }
-                };
-                
-                if (node.classList.contains("js-moving")) {
-                  if (xOfs) {
-                    node.style.left = null;
-                    propsLeft.push("left");
-                  }
-
-                  if (yOfs) {
-                    node.style.top = null;
-                    propsLeft.push("top");
-                  }
-
-                  $(node).bind(TRANSITION_EVENTS, onEnd);
-                }
-              }, 50);
-            }
+            if (index != -1)
+              startMovement(node, removedParents[index], m.target);
           });
         }
       });
