@@ -102,6 +102,34 @@
       equal(tb.isPaused, true);
     });
     
+    test("constructor works w/ no args", function() {
+      var tb = new Tileboard();
+      
+      equal(tb.width, 8);
+      equal(tb.height, 8);
+      equal($("tr", tb.table).length, 8);
+      equal($("td", tb.table).length, 64);
+    });
+
+    test("constructor works w/ width/height args", function() {
+      var tb = new Tileboard({width: 2, height: 3});
+      
+      equal(tb.width, 2);
+      equal(tb.height, 3);
+      equal($("tr", tb.table).length, 3);
+      equal($("td", tb.table).length, 6);
+    });
+
+    test("constructor works w/ data-width/height attrs", function() {
+      var table = $('<table data-width="2" data-height="3"></table>');
+      var tb = new Tileboard(table);
+      
+      equal(tb.width, 2);
+      equal(tb.height, 3);
+      equal($("tr", tb.table).length, 3);
+      equal($("td", tb.table).length, 6);
+    });
+    
     if (location.search.match(/externalreporter=1/))
       document.write('<script src="/externalreporter.js"></' + 'script>');
     </script>

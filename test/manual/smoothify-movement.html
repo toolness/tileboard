@@ -10,16 +10,16 @@
 
 .js-moving {
   transition-property: left, top;
-  transition-duration: 1s, 2s;
+  transition-duration: 2s, 1s;
   -webkit-transition-property: left, top;
-  -webkit-transition-duration: 1s, 2s;
+  -webkit-transition-duration: 2s, 1s;
 }
 </style>
 <title>Smoothify Movement Manual Tests</title>
 <h1>Smoothify Movement Manual Tests</h1>
 <p>All of the boards below should feature a single piece that perpetually
 moves between two tiles without any weird jumping or teleporting behavior.</p>
-<table class="board">
+<table class="board" data-height="2">
   <tr class="row-1">
     <td class="col-a a1">
       <img src="mdn-logo-sm.png">
@@ -32,7 +32,7 @@ moves between two tiles without any weird jumping or teleporting behavior.</p>
 <script>
 $(window).ready(function() {
   var table = $("table").remove();
-  ["h1", "a8", "h8"].forEach(function(toTile) {
+  ["h1", "a2", "h2"].forEach(function(toTile) {
     var newTable = table.clone().appendTo("body");
     var tb = new Tileboard(newTable);
 

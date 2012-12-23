@@ -20,15 +20,24 @@
 //   [Laserloaf]: examples/laserloaf/
 
 var Tileboard = (function() {
-
+  var DEFAULT_WIDTH = 8;
+  var DEFAULT_HEIGHT = 8;
+  var LETTERS = "abcdefghijklmnopqrstuvwxyz";
+  
   // ## The Tileboard Constructor
   //
   // The constructor takes only one argument: a jQuery instance or
   // DOM element representing the `<table>` element to use for the
   // board.
   var Tileboard = function Tileboard(table) {
+    if (!table) table = {};
+    if ($.isPlainObject(table)) table = tableFromOptions(table);
     this.table = $(table)[0];
+    this.width = parseInt($(table).attr("data-width") || DEFAULT_WIDTH);
+    this.height = parseInt($(table).attr("data-height") || DEFAULT_HEIGHT);
     this.table.tileboard = this;
+    if (this.width > LETTERS.length)
+      throw new Error("table is too wide");
     this._fillBoard();
   };
   
@@ -59,9 +68,6 @@ var Tileboard = (function() {
       return piece.parentNode.tileId;
     },
     _fillBoard: function() {
-      var BOARD_WIDTH = 8;
-      var BOARD_HEIGHT = 8;
-      var LETTERS = "abcdefgh";
       var TAB_SIZE = 2;
       var baseIndent = 0;
       var table = $(this.table);
@@ -80,8 +86,8 @@ var Tileboard = (function() {
       }
       table.empty();
       
-      for (var y = 0; y < BOARD_HEIGHT; y++) {
-        var rowNum = BOARD_HEIGHT - y;
+      for (var y = 0; y < this.height; y++) {
+        var rowNum = this.height - y;
         var row = rows.filter('.row-' + rowNum);
         var rowCells = $('td', row).remove();
 
@@ -91,7 +97,7 @@ var Tileboard = (function() {
 
         table.append(indent(1)).append(row);
 
-        for (var x = 0; x < BOARD_WIDTH; x++) {
+        for (var x = 0; x < this.width; x++) {
           var id = LETTERS[x] + rowNum;
           var td = rowCells.filter('.' + id);
           
@@ -106,6 +112,15 @@ var Tileboard = (function() {
       }
       table.append(indent(0));
     }
+  };
+  
+  var tableFromOptions = function(options) {
+    var table = $('<table class="board"></table>');
+    
+    if (options.width) table.attr("data-width", options.width);
+    if (options.height) table.attr("data-height", options.height);
+
+    return table;
   };
   
   return Tileboard;
