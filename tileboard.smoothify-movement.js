@@ -9,6 +9,7 @@
       this.classList.remove("js-moving");
       this.style.left = null;
       this.style.top = null;
+      this.removeAttribute("data-moving-from");
       ["style", "class"].forEach(function(attr) {
         if (this.hasAttribute(attr) && this.getAttribute(attr) === "")
           this.removeAttribute(attr);
@@ -17,12 +18,18 @@
     }
   }
   
-  function startMovement(piece, from, to) {
+  function startMovement() {
+    var piece = this;
+    var to = piece.parentNode;
+    var table = to.parentNode.parentNode;
+    var fromTileId = piece.getAttribute("data-moving-from");
+    var from = table.querySelector("." + fromTileId);
     var prevRect = from.getBoundingClientRect();
     var currRect = to.getBoundingClientRect();
     var xOfs = prevRect.left - currRect.left;
     var yOfs = prevRect.top - currRect.top;
 
+    piece.classList.remove("js-moving");
     if (xOfs) piece.style.left = xOfs + "px";
     if (yOfs) piece.style.top = yOfs + "px";
 
@@ -78,8 +85,11 @@
         if (m.addedNodes && m.addedNodes.length) {
           [].slice.call(m.addedNodes).forEach(function(node) {
             var index = removed.indexOf(node);
-            if (index != -1)
-              startMovement(node, removedParents[index], m.target);
+            if (index != -1) {
+              node.setAttribute("data-moving-from",
+                                removedParents[index].tileId);
+              startMovement.call(node);
+            }
           });
         }
       });
@@ -89,7 +99,9 @@
       subtree: true,
       childList: true
     });
-  
+
+    $(this.table).find(".js-moving[data-moving-from]").each(startMovement);
+
     return observer;
   };
 })(Tileboard);
