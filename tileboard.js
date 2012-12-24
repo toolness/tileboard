@@ -39,6 +39,7 @@ var Tileboard = (function() {
     if (this.width > LETTERS.length)
       throw new Error("table is too wide");
     this._fillBoard();
+    $(this.table).trigger("tileboard:activate");
   };
   
   Tileboard.prototype = {
@@ -122,6 +123,13 @@ var Tileboard = (function() {
 
     return table;
   };
+  
+  $(window).ready(function() {
+    $(".board").each(function() {
+      if (!this.hasAttribute("data-no-auto-activate"))
+        new Tileboard(this);
+    });
+  });
   
   return Tileboard;
 })();

@@ -105,7 +105,7 @@ h1 {
 </div>
 
 <div id="panes">
-  <table id="board" class="board">
+  <table id="board" class="board smoothify-movement">
     <tr class="row-8">
       <td class="col-h h8">
         <img class="random-mover js-moving" data-moving-from="b2" 
@@ -127,17 +127,17 @@ h1 {
 <script src="../../tileboard.random-mover.js"></script>
 <script src="../../tileboard.smoothify-movement.js"></script>
 <script>
-$(window).ready(function() {
-  var tileboard = new Tileboard("#board");
+$(function setupCssEditing() {
   var style = $("style");
 
-  tileboard.smoothifyMovement();
   $("#edit-css").click(function() {  $("body").toggleClass("editing-css"); });
   $("#css").text(style.text()).bind("change keyup", function() {
     style.text(this.value);
   });
+});
 
-  // Pause logic.
+$(function setupPauseLogic() {
+  var tileboard = $("#board")[0].tileboard;
 
   tileboard.on('change:isPaused', function() {
     $(document.body).toggleClass("paused", tileboard.isPaused);

@@ -19,26 +19,29 @@
 <h1>Smoothify Movement Manual Tests</h1>
 <p>All of the boards below should feature a single piece that perpetually
 moves between two tiles without any weird jumping or teleporting behavior.</p>
-<table class="board" data-height="2">
+<table class="board smoothify-movement" data-height="2">
   <tr class="row-2">
     <td class="col-a a2">
-      <img src="mdn-logo-sm.png" class="js-moving" data-moving-from="a1">
+      <img src="mdn-logo-sm.png" class="js-moving pingpong-mover" 
+       data-moving-from="a1">
     </td>
   </tr>
 </table>
 <p>Above: smoothly move up and down.</p>
-<table class="board" data-height="2">
+<table class="board smoothify-movement" data-height="2">
   <tr class="row-1">
     <td class="col-h h1">
-      <img src="mdn-logo-sm.png" class="js-moving" data-moving-from="a1">
+      <img src="mdn-logo-sm.png" class="js-moving pingpong-mover" 
+       data-moving-from="a1">
     </td>
   </tr>
 </table>
 <p>Above: smoothly move left and right.</p>
-<table class="board" data-height="2">
+<table class="board smoothify-movement" data-height="2">
   <tr class="row-2">
     <td class="col-h h2">
-      <img src="mdn-logo-sm.png" class="js-moving" data-moving-from="a1">
+      <img src="mdn-logo-sm.png" class="js-moving pingpong-mover" 
+       data-moving-from="a1">
     </td>
   </tr>
 </table>
@@ -46,14 +49,4 @@ moves between two tiles without any weird jumping or teleporting behavior.</p>
 <script src="../../vendor/zepto.js"></script>
 <script src="../../tileboard.js"></script>
 <script src="../../tileboard.smoothify-movement.js"></script>
-<script>
-$(window).ready(function() {
-  $(".board").each(function() {
-    var tb = new Tileboard(this);
-    tb.smoothifyMovement();
-    $(this).on("jsmovingend", function pingPong(event, fromTileId) {
-      tb.move(event.target, fromTileId);
-    });
-  });
-});
-</script>
+<script src="../../tileboard.pingpong-mover.js"></script>

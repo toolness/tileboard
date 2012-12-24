@@ -105,4 +105,10 @@
 
     return observer;
   };
+  
+  $(window).on("tileboard:activate", function(event) {
+    if (event.target.classList.contains("smoothify-movement")) {
+      event.target.tileboard.smoothifyMovement();
+    }
+  });
 })(Tileboard);
