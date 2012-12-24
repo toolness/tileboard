@@ -31,7 +31,7 @@
 
   <body>
     <h1  id="qunit-header">Tileboard Test Suite</h1>
-    <h2  id="qunit-banner"></h2>      
+    <h2  id="qunit-banner"></h2>
     <div id="qunit-testrunner-toolbar">
       Manual tests:
       <ul>
@@ -64,10 +64,10 @@
       equal($("img", tb.table).length, 1);
       equal($("tr.row-1 td.col-a.a1 img", tb.table).length, 1);
     });
-    
+
     test("move(from, to) works w/ tile ID as from", function() {
       var tb = new Tileboard($("#qunit-fixture .board").clone());
-      
+
       tb.move("a1", "b5");
       equal(tb.pieces("a1").length, 0);
       equal(tb.pieces("b5").length, 1);
@@ -85,7 +85,7 @@
 
     test("move(from, to) works w/ piece as from", function() {
       var tb = new Tileboard($("#qunit-fixture .board").clone());
-      
+
       tb.move($("img", tb.table), "c3");
       equal(tb.pieces("a1").length, 0);
       equal(tb.pieces("c3").length, 1);
@@ -101,13 +101,41 @@
       equal(tb.pieces("b5").length, 2);
     });
 
+    test("moveBy(start, offset) works w/ tileId for start", function() {
+      var tb = new Tileboard($("#qunit-fixture .board").clone());
+
+      tb.moveBy("a1", {x:1, y:2});
+      equal(tb.pieces("a1").length, 0);
+      equal(tb.pieces("b3").length, 1);
+    });
+
+    test("moveBy(start, offset) works w/ piece for start", function() {
+      var tb = new Tileboard($("#qunit-fixture .board").clone());
+
+      tb.moveBy($("img", tb.table), {x:1, y:2});
+      equal(tb.pieces("a1").length, 0);
+      equal(tb.pieces("b3").length, 1);
+    });
+
+    test("moveBy(start, offset) works w/ pieces for start", function() {
+      var tb = new Tileboard($("#qunit-fixture .board").clone());
+      $("tr.row-3 td.col-b.b3", tb.table)
+        .append($('<img src="manual/mdn-logo-sm.png">'));
+
+      tb.moveBy($("img", tb.table), {x:2, y:3});
+      equal(tb.pieces("a1").length, 0);
+      equal(tb.pieces("c4").length, 1);
+      equal(tb.pieces("b3").length, 0);
+      equal(tb.pieces("d6").length, 1);
+    });
+
     test("tile() works", function() {
       var tb = new Tileboard($("#qunit-fixture .board").clone());
-      
+
       equal(tb.tile($("img", tb.table)[0]), "a1", "w/ DOM element");
       equal(tb.tile($("img", tb.table)), "a1", "w/ jQuery/Zepto instance");
     });
-    
+
     test("pausing works", function() {
       var tb = new Tileboard($("#qunit-fixture .board").clone());
       var changes = [];
@@ -115,16 +143,16 @@
       tb.on("change:isPaused", function() {
         changes.push(tb.isPaused);
       });
-      
+
       equal(tb.isPaused, false);
       tb.setPaused(true);
       deepEqual(changes, [true]);
       equal(tb.isPaused, true);
     });
-    
+
     test("constructor works w/ no args", function() {
       var tb = new Tileboard();
-      
+
       equal(tb.width, 8);
       equal(tb.height, 8);
       equal($("tr", tb.table).length, 8);
@@ -133,7 +161,7 @@
 
     test("constructor works w/ width/height args", function() {
       var tb = new Tileboard({width: 2, height: 3});
-      
+
       equal(tb.width, 2);
       equal(tb.height, 3);
       equal($("tr", tb.table).length, 3);
@@ -143,13 +171,13 @@
     test("constructor works w/ data-width/height attrs", function() {
       var table = $('<table data-width="2" data-height="3"></table>');
       var tb = new Tileboard(table);
-      
+
       equal(tb.width, 2);
       equal(tb.height, 3);
       equal($("tr", tb.table).length, 3);
       equal($("td", tb.table).length, 6);
     });
-    
+
     if (location.search.match(/externalreporter=1/))
       document.write('<script src="/externalreporter.js"></' + 'script>');
     </script>

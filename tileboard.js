@@ -60,6 +60,21 @@ var Tileboard = (function() {
         pieces = $(pieces);
       $("." + dest, this.table).append(pieces);
     },
+    moveBy: function(pieces, offset) {
+      offset.x = offset.x || 0;
+      offset.y = offset.y || 0;
+      if (typeof(pieces) == "string")
+        pieces = this.pieces(pieces);
+      else
+        pieces = $(pieces);
+      var tb = this;
+      pieces.each(function(i, piece) {
+        var start = tb.tile(piece);
+        var end = String.fromCharCode(start[0].charCodeAt() + offset.x)
+          + (parseInt(start[1]) + offset.y);
+        tb.move(piece, end);
+      });
+    },
     pieces: function(tile) {
       return $("." + tile + " > *", this.table);
     },
