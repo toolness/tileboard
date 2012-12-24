@@ -5,6 +5,7 @@
                           window.MozMutationObserver);
 
   function endMovement() {
+    var fromTileId = this.getAttribute("data-moving-from");
     if (this.classList.contains("js-moving")) {
       this.classList.remove("js-moving");
       this.style.left = null;
@@ -14,7 +15,7 @@
         if (this.hasAttribute(attr) && this.getAttribute(attr) === "")
           this.removeAttribute(attr);
       }, this);
-      $(this).trigger("jsmovingend");
+      $(this).trigger("jsmovingend", fromTileId);
     }
   }
   
