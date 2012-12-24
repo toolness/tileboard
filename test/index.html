@@ -65,7 +65,7 @@
       equal($("tr.row-1 td.col-a.a1 img", tb.table).length, 1);
     });
     
-    test("move() works w/ string as arg 0", function() {
+    test("move(from, to) works w/ tile ID as from", function() {
       var tb = new Tileboard($("#qunit-fixture .board").clone());
       
       tb.move("a1", "b5");
@@ -73,14 +73,34 @@
       equal(tb.pieces("b5").length, 1);
     });
 
-    test("move() works w/ piece as arg 0", function() {
+    test("move(from, to) w/ tile ID as from moves all pieces on tile", function() {
+      var tb = new Tileboard($("#qunit-fixture .board").clone());
+      $("tr.row-1 td.col-a.a1", tb.table)
+        .append($('<img src="manual/mdn-logo-sm.png">'));
+
+      tb.move("a1", "b5");
+      equal(tb.pieces("a1").length, 0);
+      equal(tb.pieces("b5").length, 2);
+    });
+
+    test("move(from, to) works w/ piece as from", function() {
       var tb = new Tileboard($("#qunit-fixture .board").clone());
       
       tb.move($("img", tb.table), "c3");
       equal(tb.pieces("a1").length, 0);
       equal(tb.pieces("c3").length, 1);
     });
-    
+
+    test("move(from, to) works w/ multiple pieces as from", function() {
+      var tb = new Tileboard($("#qunit-fixture .board").clone());
+      $("tr.row-3 td.col-b.b3", tb.table)
+        .append($('<img src="manual/mdn-logo-sm.png">'));
+
+      tb.move($("img", tb.table), "b5");
+      equal(tb.pieces("a1").length, 0);
+      equal(tb.pieces("b5").length, 2);
+    });
+
     test("tile() works", function() {
       var tb = new Tileboard($("#qunit-fixture .board").clone());
       
